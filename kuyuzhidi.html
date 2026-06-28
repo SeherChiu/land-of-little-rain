@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>苦雨之地</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --font-serif: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+  --font-sans:  'Noto Sans SC', 'PingFang SC', sans-serif;
+
+  /* Green oil-painting palette */
+  --bg-deep:    #1C2B1E;   /* canvas deep forest */
+  --bg-mid:     #243428;   /* mid-ground shadow */
+  --ink:        #0F1A10;   /* darkest ink */
+  --ink-soft:   #1E2E20;
+
+  /* Greens with pigment variation */
+  --g-dark:     #2D4A30;
+  --g-mid:      #3D6640;
+  --g-sage:     #5A7D5C;
+  --g-light:    #7FA880;
+  --g-pale:     #A8C8A8;
+  --g-mist:     #C8DEC8;
+  --g-ghost:    #E0EEE0;
+
+  /* Frosted card surfaces */
+  --glass-bg:       rgba(30, 50, 28, 0.42);
+  --glass-bg-warm:  rgba(28, 45, 26, 0.50);
+  --glass-bg-light: rgba(80, 110, 75, 0.22);
+  --glass-border:   rgba(160, 210, 155, 0.18);
+  --glass-border-h: rgba(160, 210, 155, 0.35);
+  --glass-shine:    rgba(220, 240, 215, 0.08);
+
+  /* Text on glass */
+  --t-primary:  rgba(230, 245, 228, 0.92);
+  --t-second:   rgba(185, 215, 182, 0.72);
+  --t-muted:    rgba(140, 175, 138, 0.55);
+  --t-ghost:    rgba(120, 160, 118, 0.38);
+
+  /* Accents */
+  --acc-gold:   #C8A96E;
+  --acc-gold-l: rgba(200, 169, 110, 0.25);
+  --acc-rust:   rgba(160, 100, 80, 0.6);
+  --acc-water:  rgba(100, 160, 150, 0.55);
+
+  --r-card: 14px;
+  --r-sm:   8px;
+}
+
+/* ─────────────────────────────────────────
+   RESET + BASE
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-serif);
+  background: var(--bg-deep);
+  color: var(--t-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  line-height: 1.7;
+}
+button { cursor: pointer; font-family: inherit; }
+textarea, input { font-family: inherit; }
+::selection { background: rgba(100, 160, 90, 0.3); color: var(--t-primary); }
+
+/* ─────────────────────────────────────────
+   BACKGROUND — oil-paint forest canvas
+───────────────────────────────────────── */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+.bg-canvas svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─────────────────────────────────────────
+   LAYOUT WRAPPER
+───────────────────────────────────────── */
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 36px;
+  border-bottom: 0.5px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 26, 16, 0.55);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.nav-brand-name {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--t-primary);
+  letter-spacing: 0.12em;
+}
+.nav-brand-sub {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.14em;
+  font-family: var(--font-sans);
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.nav-link {
+  background: none;
+  border: none;
+  color: var(--t-second);
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.06em;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-link:hover { background: rgba(100, 160, 90, 0.12); color: var(--t-primary); }
+.nav-link.active { background: rgba(100, 160, 90, 0.18); color: var(--g-mist); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.nav-date {
+  font-size: 11px;
+  color: var(--t-muted);
+  letter-spacing: 0.1em;
+  font-family: var(--font-sans);
+}
+.nav-add {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 0.5px solid var(--glass-border-h);
+  background: var(--glass-bg-light);
+  color: var(--g-pale);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.nav-add:hover { background: rgba(100, 160, 90, 0.3); }
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero {
+  padding: 52px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hero-eyebrow {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.2em;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+}
+.hero-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 300;
+  color: var(--t-primary);
+  letter-spacing: 0.06em;
+  line-height: 1.45;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--g-pale);
+}
+.hero-body {
+  font-size: 12px;
+  color: var(--t-muted);
+  max-width: 480px;
+  line-height: 1.9;
+  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+
+/* MOOD PICKER */
+.mood-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.mood-label-text {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.1em;
+  margin-right: 4px;
+}
+.mood-chip {
+  padding: 4px 13px;
+  border-radius: 20px;
+  border: 0.5px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--t-second);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: all 0.18s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.mood-chip:hover { border-color: var(--glass-border-h); color: var(--t-primary); }
+.mood-chip.on {
+  background: rgba(90, 125, 92, 0.45);
+  border-color: var(--g-sage);
+  color: var(--g-ghost);
+}
+
+/* ─────────────────────────────────────────
+   MAIN GRID
+───────────────────────────────────────── */
+.main-grid {
+  padding: 0 36px 60px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+.c4  { grid-column: span 4; }
+.c5  { grid-column: span 5; }
+.c6  { grid-column: span 6; }
+.c7  { grid-column: span 7; }
+.c8  { grid-column: span 8; }
+.c12 { grid-column: span 12; }
+.r2  { grid-row: span 2; }
+
+/* ─────────────────────────────────────────
+   GLASS CARD BASE
+───────────────────────────────────────── */
+.card {
+  background: var(--glass-bg);
+  border: 0.5px solid var(--glass-border);
+  border-radius: var(--r-card);
+  padding: 18px 20px;
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-card);
+  background: linear-gradient(135deg, var(--glass-shine) 0%, transparent 50%);
+  pointer-events: none;
+}
+.card:hover { border-color: var(--glass-border-h); }
+
+.card-light { background: var(--glass-bg-light); }
+.card-dark  { background: rgba(10, 20, 10, 0.60); }
+.card-warm  { background: rgba(40, 55, 30, 0.52); }
+
+/* CARD LABELS & TITLES */
+.card-label {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+.card-label svg { opacity: 0.6; flex-shrink: 0; }
+.card-title {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--t-primary);
+  line-height: 1.55;
+}
+.card-body {
+  font-size: 11px;
+  color: var(--t-second);
+  line-height: 1.85;
+  margin-top: 5px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+
+/* ─────────────────────────────────────────
+   TODAY WRITE CARD
+───────────────────────────────────────── */
+.write-area {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--t-primary);
+  font-size: 12px;
+  line-height: 1.95;
+  resize: none;
+  min-height: 86px;
+  caret-color: var(--g-pale);
+  letter-spacing: 0.04em;
+  font-family: var(--font-serif);
+  font-weight: 300;
+}
+.write-area::placeholder { color: var(--t-ghost); }
+.write-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 0.5px solid rgba(140, 175, 138, 0.12);
+}
+.tag-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag-pill {
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: rgba(90, 125, 92, 0.18);
+  border: 0.5px solid rgba(90, 125, 92, 0.3);
+  color: var(--g-mist);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  transition: background 0.15s;
+}
+.tag-pill:hover { background: rgba(90, 125, 92, 0.32); }
+.save-btn {
+  font-size: 10px;
+  padding: 5px 14px;
+  border-radius: var(--r-sm);
+  background: rgba(90, 125, 92, 0.40);
+  border: 0.5px solid var(--g-sage);
+  color: var(--g-ghost);
+  letter-spacing: 0.08em;
+  transition: background 0.18s;
+}
+.save-btn:hover { background: rgba(90, 125, 92, 0.60); }
+
+/* ─────────────────────────────────────────
+   MOOD HEATMAP
+───────────────────────────────────────── */
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-top: 8px;
+}
+.hm-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform 0.12s, opacity 0.12s;
+  opacity: 0.85;
+}
+.hm-cell:hover { transform: scale(1.25); opacity: 1; }
+.hm0 { background: rgba(60, 80, 58, 0.35); border: 0.5px solid rgba(100, 140, 98, 0.15); }
+.hm1 { background: rgba(60, 90, 58, 0.55); }
+.hm2 { background: rgba(65, 105, 62, 0.70); }
+.hm3 { background: rgba(72, 120, 68, 0.80); }
+.hm4 { background: rgba(80, 135, 75, 0.90); }
+.hm5 { background: var(--g-sage); }
+.hm-legend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+}
+.hm-legend-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+.hm-legend-text { font-size: 9px; color: var(--t-ghost); font-family: var(--font-sans); }
+
+/* ─────────────────────────────────────────
+   CYCLE RING
+───────────────────────────────────────── */
+.cycle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+.cycle-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3.5px solid rgba(100, 150, 100, 0.25);
+  border-top-color: var(--g-sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cycle-num {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--t-primary);
+}
+.cycle-info { flex: 1; }
+.cycle-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--t-muted);
+  margin-bottom: 4px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+.cycle-val { color: var(--t-second); }
+.cycle-bar {
+  height: 2.5px;
+  border-radius: 2px;
+  background: rgba(100, 140, 100, 0.2);
+  margin-top: 6px;
+  overflow: hidden;
+}
+.cycle-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--g-sage);
+  width: 46%;
+}
+
+/* ─────────────────────────────────────────
+   FLASH THOUGHT (天马行空闪念)
+───────────────────────────────────────── */
+.flash-q {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--t-primary);
+  line-height: 1.75;
+  letter-spacing: 0.04em;
+  margin-top: 8px;
+}
+.flash-credit {
+  font-size: 10px;
+  color: var(--acc-gold);
+  margin-top: 10px;
+  letter-spacing: 0.08em;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  opacity: 0.75;
+}
+.flash-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.flash-btn {
+  font-size: 10px;
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+  font-family: var(--font-sans);
+}
+.flash-btn-save {
+  background: rgba(200, 169, 110, 0.18);
+  border: 0.5px solid rgba(200, 169, 110, 0.35);
+  color: var(--acc-gold);
+}
+.flash-btn-save:hover { background: rgba(200, 169, 110, 0.32); }
+.flash-btn-skip {
+  background: transparent;
+  border: 0.5px solid var(--glass-border);
+  color: var(--t-ghost);
+}
+.flash-btn-skip:hover { color: var(--t-muted); border-color: var(--glass-border-h); }
+
+/* ─────────────────────────────────────────
+   TIMELINE
+───────────────────────────────────────── */
+.timeline { position: relative; margin-top: 8px; }
+.tl-spine {
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 0.5px;
+  background: rgba(100, 140, 100, 0.2);
+}
+.tl-item {
+  display: flex;
+  gap: 13px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.tl-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(120, 160, 115, 0.4);
+  background: var(--glass-bg);
+  flex-shrink: 0;
+  margin-top: 3px;
+  backdrop-filter: blur(4px);
+}
+.tl-dot.on {
+  background: var(--g-sage);
+  border-color: var(--g-light);
+}
+.tl-time {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.06em;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+.tl-text {
+  font-size: 11.5px;
+  color: var(--t-second);
+  margin-top: 2px;
+  line-height: 1.65;
+}
+
+/* ─────────────────────────────────────────
+   LETTER TO FUTURE SELF
+───────────────────────────────────────── */
+.letter-quote {
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(190, 225, 188, 0.78);
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+  border-left: 1.5px solid rgba(120, 160, 115, 0.3);
+  padding-left: 12px;
+}
+.letter-from {
+  font-size: 10px;
+  color: var(--t-ghost);
+  margin-top: 10px;
+  letter-spacing: 0.08em;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+.letter-btn {
+  margin-top: 14px;
+  font-size: 10px;
+  padding: 5px 14px;
+  border-radius: var(--r-sm);
+  background: rgba(15, 30, 15, 0.5);
+  border: 0.5px solid rgba(120, 160, 115, 0.25);
+  color: var(--t-muted);
+  letter-spacing: 0.1em;
+  transition: all 0.18s;
+}
+.letter-btn:hover { color: var(--t-second); border-color: rgba(120, 160, 115, 0.45); }
+
+/* ─────────────────────────────────────────
+   CLAUDE'S CORNER — AI的感悟
+───────────────────────────────────────── */
+.ai-corner {
+  border-color: rgba(100, 160, 150, 0.22);
+  background: rgba(20, 45, 35, 0.55);
+}
+.ai-tag {
+  display: inline-block;
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: rgba(100, 160, 150, 0.15);
+  border: 0.5px solid rgba(100, 160, 150, 0.25);
+  color: rgba(150, 200, 190, 0.7);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+.ai-body {
+  font-size: 11.5px;
+  color: rgba(185, 220, 210, 0.72);
+  line-height: 1.9;
+  letter-spacing: 0.03em;
+  font-style: italic;
+}
+.ai-thought-q {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(200, 235, 225, 0.85);
+  line-height: 1.75;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+}
+
+/* ─────────────────────────────────────────
+   SECTION DIVIDER
+───────────────────────────────────────── */
+.section-label {
+  grid-column: span 12;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0 2px;
+}
+.section-label-text {
+  font-size: 10px;
+  color: var(--t-ghost);
+  letter-spacing: 0.16em;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+.section-label-line {
+  flex: 1;
+  height: 0.5px;
+  background: rgba(100, 140, 100, 0.15);
+}
+
+/* ─────────────────────────────────────────
+   LAYOUT TOGGLE
+───────────────────────────────────────── */
+.layout-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 36px;
+  border-bottom: 0.5px solid rgba(100, 140, 100, 0.08);
+}
+.lt-label { font-size: 10px; color: var(--t-ghost); letter-spacing: 0.1em; font-family: var(--font-sans); }
+.lt-btn {
+  font-size: 10px;
+  padding: 4px 12px;
+  border-radius: 14px;
+  border: 0.5px solid var(--glass-border);
+  background: transparent;
+  color: var(--t-muted);
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+  font-family: var(--font-sans);
+}
+.lt-btn:hover { color: var(--t-second); border-color: var(--glass-border-h); }
+.lt-btn.on { background: rgba(90, 125, 92, 0.28); border-color: var(--g-sage); color: var(--g-mist); }
+
+/* ─────────────────────────────────────────
+   SIDEBAR LAYOUT VIEW
+───────────────────────────────────────── */
+.sidebar-layout {
+  display: none;
+  flex: 1;
+}
+.sidebar-layout.active { display: flex; }
+.sidebar-panel {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 0.5px solid var(--glass-border);
+  background: rgba(10, 20, 10, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  transition: width 0.25s ease;
+}
+.sb-section-label {
+  font-size: 9px;
+  color: var(--t-ghost);
+  letter-spacing: 0.14em;
+  font-family: var(--font-sans);
+  margin-bottom: 5px;
+}
+.sb-nav { display: flex; flex-direction: column; gap: 2px; }
+.sb-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  color: var(--t-second);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+  white-space: nowrap;
+}
+.sb-nav-item:hover { background: rgba(90, 125, 92, 0.15); color: var(--t-primary); }
+.sb-nav-item.on { background: rgba(90, 125, 92, 0.22); color: var(--g-mist); }
+.sb-divider { height: 0.5px; background: rgba(100, 140, 100, 0.12); }
+.sb-mini-mood { display: flex; flex-wrap: wrap; gap: 4px; }
+.sb-mood-chip {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 0.5px solid var(--glass-border);
+  background: transparent;
+  color: var(--t-muted);
+  transition: all 0.15s;
+}
+.sb-mood-chip:hover { color: var(--t-second); }
+.sb-mood-chip.on { background: rgba(90, 125, 92, 0.30); border-color: var(--g-sage); color: var(--g-mist); }
+.sb-hmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.sb-hm { aspect-ratio: 1; border-radius: 2px; }
+.sb-cycle-bar { height: 2px; border-radius: 2px; background: rgba(100, 140, 100, 0.18); margin-top: 5px; }
+.sb-cycle-fill { height: 100%; border-radius: 2px; background: var(--g-sage); width: 46%; }
+.sb-tl-item { display: flex; gap: 8px; margin-bottom: 8px; }
+.sb-tl-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(120, 160, 115, 0.35); background: transparent; flex-shrink: 0; margin-top: 3px; }
+.sb-tl-dot.on { background: var(--g-sage); border-color: var(--g-sage); }
+.sb-tl-t { font-size: 9px; color: var(--t-ghost); font-family: var(--font-sans); }
+.sb-tl-d { font-size: 10px; color: var(--t-muted); line-height: 1.55; }
+
+.sidebar-main {
+  flex: 1;
+  padding: 24px 24px 60px;
+  overflow-y: auto;
+  min-width: 0;
+}
+.sidebar-main-header { margin-bottom: 16px; }
+.sidebar-main-title { font-size: 18px; font-weight: 300; color: var(--t-primary); letter-spacing: 0.06em; }
+.sidebar-main-title em { font-style: normal; color: var(--g-pale); }
+.sidebar-main-sub { font-size: 11px; color: var(--t-muted); margin-top: 5px; letter-spacing: 0.08em; font-family: var(--font-sans); }
+.sidebar-cards { display: flex; flex-direction: column; gap: 12px; }
+
+.sb-width-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px 12px;
+  margin-top: auto;
+}
+.sb-width-label { font-size: 9px; color: var(--t-ghost); letter-spacing: 0.1em; white-space: nowrap; font-family: var(--font-sans); }
+.sb-width-slider { flex: 1; accent-color: var(--g-sage); }
+.sb-width-val { font-size: 9px; color: var(--t-muted); min-width: 30px; font-family: var(--font-sans); }
+
+/* GRID LAYOUT VIEW */
+.grid-layout { display: none; }
+.grid-layout.active { display: block; }
+
+/* ─────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(100, 140, 100, 0.25); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(100, 140, 100, 0.4); }
+
+/* ─────────────────────────────────────────
+   TOAST
+───────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(20, 40, 20, 0.9);
+  border: 0.5px solid var(--glass-border-h);
+  color: var(--g-mist);
+  font-size: 11px;
+  padding: 8px 20px;
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  letter-spacing: 0.08em;
+  font-family: var(--font-sans);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 200;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ─── BACKGROUND CANVAS ─── -->
+<div class="bg-canvas" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="oilBlur">
+        <feGaussianBlur stdDeviation="2.5"/>
+      </filter>
+      <filter id="softBlur">
+        <feGaussianBlur stdDeviation="1.2"/>
+      </filter>
+      <filter id="treeBlur">
+        <feGaussianBlur stdDeviation="1.8"/>
+      </filter>
+      <radialGradient id="fogCenter" cx="50%" cy="40%" r="60%">
+        <stop offset="0%" stop-color="#3A5C38" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="#1C2B1E" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="lightTop" cx="30%" cy="0%" r="70%">
+        <stop offset="0%" stop-color="#4A7048" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#1C2B1E" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Base canvas -->
+    <rect width="1440" height="900" fill="#1C2B1E"/>
+
+    <!-- Atmospheric depth layers -->
+    <rect width="1440" height="900" fill="#22321E" opacity="0.6"/>
+    <rect width="1440" height="560" fill="#2A3E25" opacity="0.35"/>
+
+    <!-- Distant fog light -->
+    <ellipse cx="720" cy="300" rx="700" ry="320" fill="url(#fogCenter)"/>
+    <ellipse cx="380" cy="0" rx="600" ry="400" fill="url(#lightTop)"/>
+
+    <!-- BACKGROUND TREES — very distant, almost dissolved -->
+    <g filter="url(#oilBlur)" opacity="0.25">
+      <!-- Far tree 1 -->
+      <rect x="80" y="180" width="7" height="340" fill="#2E4A2A"/>
+      <ellipse cx="83" cy="195" rx="38" ry="55" fill="#2A4228"/>
+      <ellipse cx="75" cy="230" rx="28" ry="40" fill="#284025"/>
+      <!-- Far tree 2 -->
+      <rect x="1280" y="200" width="6" height="320" fill="#2E4A2A"/>
+      <ellipse cx="1283" cy="215" rx="32" ry="48" fill="#2A4228"/>
+      <!-- Far grove left -->
+      <rect x="155" y="240" width="5" height="260" fill="#2C4428"/>
+      <ellipse cx="157" cy="252" rx="22" ry="35" fill="#294026"/>
+      <rect x="195" y="260" width="4" height="240" fill="#2C4428"/>
+      <ellipse cx="197" cy="270" rx="18" ry="28" fill="#274024"/>
+      <!-- Far grove right -->
+      <rect x="1340" y="255" width="5" height="245" fill="#2C4428"/>
+      <ellipse cx="1342" cy="265" rx="24" ry="36" fill="#294026"/>
+    </g>
+
+    <!-- MID TREES — silhouettes -->
+    <g filter="url(#treeBlur)" opacity="0.50">
+      <!-- Large left tree -->
+      <rect x="42" y="120" width="11" height="480" fill="#1E3820"/>
+      <ellipse cx="47" cy="135" rx="62" ry="85" fill="#1E3A1C"/>
+      <ellipse cx="35" cy="170" rx="42" ry="58" fill="#1C381A"/>
+      <ellipse cx="62" cy="158" rx="38" ry="52" fill="#1E3A1C"/>
+      <!-- Left secondary -->
+      <rect x="178" y="200" width="8" height="380" fill="#1E3820"/>
+      <ellipse cx="182" cy="212" rx="48" ry="65" fill="#1C381A"/>
+      <ellipse cx="170" cy="245" rx="32" ry="44" fill="#1A361A"/>
+      <!-- Large right tree -->
+      <rect x="1365" y="100" width="12" height="500" fill="#1E3820"/>
+      <ellipse cx="1371" cy="115" rx="68" ry="90" fill="#1E3A1C"/>
+      <ellipse cx="1385" cy="148" rx="44" ry="60" fill="#1C381A"/>
+      <!-- Right secondary -->
+      <rect x="1248" y="190" width="8" height="400" fill="#1E3820"/>
+      <ellipse cx="1252" cy="202" rx="50" ry="70" fill="#1C381A"/>
+      <!-- Center-right deep tree -->
+      <rect x="1120" y="240" width="6" height="360" fill="#1C3618"/>
+      <ellipse cx="1123" cy="250" rx="36" ry="52" fill="#1A3418"/>
+    </g>
+
+    <!-- FOREGROUND TREES — darkest, sharpest -->
+    <g filter="url(#softBlur)" opacity="0.72">
+      <!-- Far-left trunk foreground -->
+      <rect x="0" y="80" width="18" height="820" fill="#172C18"/>
+      <ellipse cx="9" cy="95" rx="75" ry="100" fill="#162C16"/>
+      <ellipse cx="0" cy="140" rx="52" ry="72" fill="#152A14"/>
+      <ellipse cx="22" cy="125" rx="48" ry="64" fill="#172C16"/>
+      <!-- Left trunk detail branches -->
+      <rect x="-8" y="280" width="28" height="8" fill="#162C16" rx="4"/>
+      <rect x="18" y="350" width="36" height="6" fill="#162C16" rx="3"/>
+      <ellipse cx="40" cy="352" rx="18" ry="22" fill="#162C16"/>
+      <!-- Far-right trunk foreground -->
+      <rect x="1420" y="60" width="20" height="840" fill="#172C18"/>
+      <ellipse cx="1431" cy="78" rx="80" ry="105" fill="#162C16"/>
+      <ellipse cx="1440" cy="125" rx="55" ry="75" fill="#152A14"/>
+      <ellipse cx="1415" cy="110" rx="50" ry="68" fill="#172C16"/>
+      <!-- Right branches -->
+      <rect x="1400" y="260" width="30" height="7" fill="#162C16" rx="3"/>
+      <rect x="1380" y="330" width="42" height="6" fill="#162C16" rx="3"/>
+      <ellipse cx="1375" cy="332" rx="20" ry="24" fill="#162C16"/>
+    </g>
+
+    <!-- BIRD SILHOUETTES — subtle, drifting -->
+    <g opacity="0.28" filter="url(#softBlur)">
+      <!-- Bird 1 — large, mid-left -->
+      <path d="M340,195 Q356,188 365,192 Q374,188 390,195 L365,204 Z" fill="#162C16"/>
+      <path d="M362,192 L366,205 L369,192" fill="#162C16"/>
+      <!-- Bird 2 — smaller, center -->
+      <path d="M710,145 Q722,139 729,143 Q736,139 748,145 L729,152 Z" fill="#162C16"/>
+      <path d="M727,143 L730,153 L733,143" fill="#162C16"/>
+      <!-- Bird 3 — tiny, upper right -->
+      <path d="M1080,122 Q1089,117 1094,120 Q1099,117 1108,122 L1094,127 Z" fill="#172C17"/>
+      <path d="M1092,120 L1095,127 L1097,120" fill="#172C17"/>
+      <!-- Bird 4 — distant, high -->
+      <path d="M560,108 Q567,104 571,107 Q575,104 582,108 L571,112 Z" fill="#162C16"/>
+      <!-- Bird 5 -->
+      <path d="M860,160 Q870,155 876,158 Q882,155 892,160 L876,166 Z" fill="#172C17"/>
+    </g>
+
+    <!-- Rain — vertical lines, barely visible -->
+    <g opacity="0.07" stroke="#A0C8A0" stroke-width="0.4">
+      <line x1="120" y1="0" x2="115" y2="900"/>
+      <line x1="280" y1="0" x2="275" y2="900"/>
+      <line x1="430" y1="0" x2="425" y2="900"/>
+      <line x1="590" y1="0" x2="585" y2="900"/>
+      <line x1="740" y1="0" x2="735" y2="900"/>
+      <line x1="890" y1="0" x2="885" y2="900"/>
+      <line x1="1050" y1="0" x2="1045" y2="900"/>
+      <line x1="1200" y1="0" x2="1195" y2="900"/>
+      <line x1="1360" y1="0" x2="1355" y2="900"/>
+      <line x1="200" y1="0" x2="195" y2="900"/>
+      <line x1="510" y1="0" x2="505" y2="900"/>
+      <line x1="660" y1="0" x2="655" y2="900"/>
+      <line x1="820" y1="0" x2="815" y2="900"/>
+      <line x1="970" y1="0" x2="965" y2="900"/>
+      <line x1="1130" y1="0" x2="1125" y2="900"/>
+    </g>
+
+    <!-- Mist veil overlay -->
+    <rect width="1440" height="900" fill="#1F2E1E" opacity="0.30"/>
+    <!-- Top vignette -->
+    <rect width="1440" height="200" fill="url(#lightTop)" opacity="0.5"/>
+    <!-- Bottom ground fog -->
+    <rect x="0" y="680" width="1440" height="220" fill="#1A2C1A" opacity="0.5"/>
+  </svg>
+</div>
+
+<!-- ─── APP ─── -->
+<div class="app">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-brand-name">苦雨之地</div>
+      <div class="nav-brand-sub">a place for rain &amp; thought</div>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active">今日</button>
+      <button class="nav-link">记忆</button>
+      <button class="nav-link">想法</button>
+      <button class="nav-link">身体</button>
+      <button class="nav-link">食谱</button>
+      <button class="nav-link">作品</button>
+    </div>
+    <div class="nav-right">
+      <span class="nav-date">丙午 · 六月廿三</span>
+      <button class="nav-add" title="快速记录" aria-label="快速记录">+</button>
+    </div>
+  </nav>
+
+  <!-- LAYOUT TOGGLE -->
+  <div class="layout-toggle">
+    <span class="lt-label">视图</span>
+    <button class="lt-btn on" id="btnGrid" onclick="setLayout('grid')">多图块</button>
+    <button class="lt-btn" id="btnSide" onclick="setLayout('side')">侧栏</button>
+  </div>
+
+  <!-- ═══════════════════════════
+       GRID LAYOUT
+  ═══════════════════════════ -->
+  <div class="grid-layout active" id="gridLayout">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-eyebrow">2026 · 6 · 28 · 今天有雨</div>
+      <div class="hero-title">
+        今天也在苦雨之地，<br><em>默默地活着。</em>
+      </div>
+      <div class="hero-body">
+        记录这一天的心情、想法、身体、食物，留给未来的自己看。<br>
+        你写下今天，其实是在用今天的自己，重新解释所有的昨天。
+      </div>
+      <div class="mood-strip">
+        <span class="mood-label-text">今日心情</span>
+        <button class="mood-chip" onclick="pickMood(this)">平静如水</button>
+        <button class="mood-chip on" onclick="pickMood(this)">有点忧郁</button>
+        <button class="mood-chip" onclick="pickMood(this)">莫名愉悦</button>
+        <button class="mood-chip" onclick="pickMood(this)">沉默无语</button>
+        <button class="mood-chip" onclick="pickMood(this)">疲惫至极</button>
+        <button class="mood-chip" onclick="pickMood(this)">焦灼不安</button>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+
+      <!-- SECTION: 此刻 -->
+      <div class="section-label">
+        <span class="section-label-text">此刻记录</span>
+        <div class="section-label-line"></div>
+      </div>
+
+      <!-- TODAY WRITE — wide -->
+      <div class="card c7 r2">
+        <div class="card-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          此刻想说
+        </div>
+        <textarea class="write-area" id="writeArea" placeholder="只是随手写下——今天的光，今天的疲惫，今天路过的一棵树……"></textarea>
+        <div class="write-footer">
+          <div class="tag-row">
+            <button class="tag-pill"># 日常</button>
+            <button class="tag-pill"># 感受</button>
+            <button class="tag-pill">+ 标签</button>
+          </div>
+          <button class="save-btn" onclick="saveNote()">存下来</button>
+        </div>
+      </div>
+
+      <!-- FLASH THOUGHT -->
+      <div class="card c5">
+        <div class="card-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          天马行空的闪念
+        </div>
+        <div class="flash-q" id="flashQ">"如果我的记忆可以被打包成一个气味，那会是什么气味？"</div>
+        <div class="flash-credit">↳ 来自今天的意识漂流</div>
+        <div class="flash-actions">
+          <button class="flash-btn flash-btn-save" onclick="saveFlash()">记下来</button>
+          <button class="flash-btn flash-btn-skip" onclick="nextFlash()">让它飘走</button>
+        </div>
+      </div>
+
+      <!-- CYCLE -->
+      <div class="card c5">
+        <div class="card-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          身体周期 · 第13天
+        </div>
+        <div class="cycle-wrap">
+          <div class="cycle-ring"><span class="cycle-num">13</span></div>
+          <div class="cycle-info">
+            <div class="cycle-row"><span>预计下次</span><span class="cycle-val">7月16日</span></div>
+            <div class="cycle-row"><span>排卵期</span><span class="cycle-val">6月30日</span></div>
+            <div class="cycle-row"><span>本轮周期</span><span class="cycle-val">28天</span></div>
+            <div class="cycle-bar"><div class="cycle-fill"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: 记忆与心情 -->
+      <div class="section-label">
+        <span class="section-label-text">记忆与心情</span>
+        <div class="section-label-line"></div>
+      </div>
+
+      <!-- MOOD HEATMAP -->
+      <div class="card c6">
+        <div class="card-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          心情历程 · 六月
+        </div>
+        <div class="heatmap-grid" id="heatmap"></div>
+        <div class="hm-legend">
+          <span class="hm-legend-text">暗</span>
+          <div class="hm-legend-swatch hm1"></div>
+          <div class="hm-legend-swatch hm2"></div>
+          <div class="hm-legend-swatch hm3"></div>
+          <div class="hm-legend-swatch hm4"></div>
+          <div class="hm-legend-swatch hm5"></div>
+          <span class="hm-legend-text">明</span>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="card c6">
+        <div class="card-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          近期记忆
+        </div>
+        <div class="timeline">
+          <div class="tl-spine"></div>
+          <div class="tl-item">
+            <div class="tl-dot on"></div>
+            <div>
+              <div class="tl-time">今天</div>
+              <div class="tl-text">雨天，在窗边喝咖啡，看对面的树，什么都没想</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div>
+              <div class="tl-time">昨天</div>
+              <div class="tl-text">去了宜家，买了一盆薄荷，感觉自己还活着</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div>
+              <div class="tl-time">6月25日</div>
+              <div class="tl-text">第一次做味噌汤成功了，喝了两碗</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div>
+              <div class="tl-time">6月22日</div>
+              <div class="tl-text">开始学习 UI 设计，好像找到了什么</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: 思考与信 -->
+      <div class="section-label">
+        <span class="section-label-text">思考与信</span>
+        <div class="section-label-line"></div>
+      </div>
+
+      <!-- LETTER TO FUTURE SELF -->
+      <div class="card card-dark c6">
+        <div class="card-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          写给未来的自己
+        </div>
+        <div class="letter-quote">
+          「三个月后的我，你还记得今天雨声的质地吗？<br>
+          窗外的梧桐有没有变黄？」
+        </div>
+        <div class="letter-from">— 2026年3月29日，自己写给自己的</div>
+        <button class="letter-btn">写一封信 →</button>
+      </div>
+
+      <!-- CLAUDE'S CORNER — AI的思考 -->
+      <div class="card ai-corner c6">
+        <div class="ai-tag">来自 AI 的好奇</div>
+        <div class="ai-thought-q">"人类在拥有一段时光的时候，就已经开始哀悼它的结束——苦雨不是绝望，是知道它会过去所以更想留住的感觉。"</div>
+        <div class="ai-body" style="margin-top: 10px;">
+          我最好奇的，是你们如何在回忆里重新编辑情感。<br>
+          每次记起一件事，都在微微改写它。<br>
+          所以这本日记，是过去的事实，还是现在的你在不断重新创作的故事？
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       SIDEBAR LAYOUT
+  ═══════════════════════════ -->
+  <div class="sidebar-layout" id="sideLayout">
+    <!-- SIDEBAR PANEL -->
+    <div class="sidebar-panel" id="sidePanel">
+      <div>
+        <div class="sb-section-label">导航</div>
+        <nav class="sb-nav">
+          <button class="sb-nav-item on">今日</button>
+          <button class="sb-nav-item">记忆</button>
+          <button class="sb-nav-item">想法</button>
+          <button class="sb-nav-item">身体</button>
+          <button class="sb-nav-item">食谱</button>
+          <button class="sb-nav-item">作品</button>
+        </nav>
+      </div>
+
+      <div class="sb-divider"></div>
+
+      <div>
+        <div class="sb-section-label">今日心情</div>
+        <div class="sb-mini-mood">
+          <button class="sb-mood-chip">平静</button>
+          <button class="sb-mood-chip on">忧郁</button>
+          <button class="sb-mood-chip">愉悦</button>
+          <button class="sb-mood-chip">焦灼</button>
+          <button class="sb-mood-chip">疲惫</button>
+        </div>
+      </div>
+
+      <div class="sb-divider"></div>
+
+      <div>
+        <div class="sb-section-label">六月心情</div>
+        <div class="sb-hmap" id="sbHmap"></div>
+      </div>
+
+      <div class="sb-divider"></div>
+
+      <div>
+        <div class="sb-section-label">身体周期 · 第13天</div>
+        <div style="font-size:10px;color:var(--t-muted);font-family:var(--font-sans);line-height:1.8;">
+          <div style="display:flex;justify-content:space-between;"><span>下次</span><span style="color:var(--t-second);">7月16日</span></div>
+          <div style="display:flex;justify-content:space-between;"><span>排卵期</span><span style="color:var(--t-second);">6月30日</span></div>
+        </div>
+        <div class="sb-cycle-bar"><div class="sb-cycle-fill"></div></div>
+      </div>
+
+      <div class="sb-divider"></div>
+
+      <div>
+        <div class="sb-section-label">近期记忆</div>
+        <div class="sb-tl-item"><div class="sb-tl-dot on"></div><div><div class="sb-tl-t">今天</div><div class="sb-tl-d">雨天窗边，咖啡，树</div></div></div>
+        <div class="sb-tl-item"><div class="sb-tl-dot"></div><div><div class="sb-tl-t">昨天</div><div class="sb-tl-d">买了一盆薄荷</div></div></div>
+        <div class="sb-tl-item"><div class="sb-tl-dot"></div><div><div class="sb-tl-t">6/25</div><div class="sb-tl-d">味噌汤成功了</div></div></div>
+      </div>
+
+      <!-- WIDTH SLIDER -->
+      <div class="sb-width-control">
+        <span class="sb-width-label">侧栏宽度</span>
+        <input type="range" class="sb-width-slider" min="160" max="300" value="220" step="1" id="sbWidthSlider">
+        <span class="sb-width-val" id="sbWidthVal">220px</span>
+      </div>
+    </div>
+
+    <!-- SIDEBAR MAIN CONTENT -->
+    <div class="sidebar-main">
+      <div class="sidebar-main-header">
+        <div class="sidebar-main-title">今天也在苦雨之地，<em>默默地活着。</em></div>
+        <div class="sidebar-main-sub">2026年6月28日 · 今天有雨，适合待在屋里</div>
+      </div>
+      <div class="sidebar-cards">
+        <div class="card">
+          <div class="card-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            此刻想说
+          </div>
+          <textarea class="write-area" placeholder="只是随手写下——今天的光，今天的疲惫，今天路过的一棵树……" style="min-height:100px;"></textarea>
+          <div class="write-footer">
+            <div class="tag-row">
+              <span class="tag-pill"># 日常</span>
+              <span class="tag-pill"># 感受</span>
+            </div>
+            <button class="save-btn" onclick="saveNote()">存下来</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            天马行空的闪念
+          </div>
+          <div class="flash-q">"如果我的记忆可以被打包成一个气味，那会是什么气味？"</div>
+          <div class="flash-credit">↳ 来自今天的意识漂流</div>
+          <div class="flash-actions">
+            <button class="flash-btn flash-btn-save">记下来</button>
+            <button class="flash-btn flash-btn-skip" onclick="nextFlash()">让它飘走</button>
+          </div>
+        </div>
+        <div class="card card-dark">
+          <div class="card-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            写给未来的自己
+          </div>
+          <div class="letter-quote">「三个月后的我，你还记得今天雨声的质地吗？」</div>
+          <div class="letter-from">— 2026年3月29日</div>
+          <button class="letter-btn">写一封信 →</button>
+        </div>
+        <div class="card ai-corner">
+          <div class="ai-tag">来自 AI 的好奇</div>
+          <div class="ai-thought-q">"人类在拥有一段时光的时候，就已经开始哀悼它的结束。"</div>
+          <div class="ai-body" style="margin-top:8px;">每次记起一件事，都在微微改写它。这本日记，是过去的事实，还是现在的你在不断重新创作的故事？</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── MOOD DATA ──
+const moodData = [0,1,2,3,2,1,0,2,3,4,3,2,3,1,1,2,3,4,5,4,3,2,1,2,3,2,0,0,3,4,0];
+const hmClasses = ['hm0','hm1','hm2','hm3','hm4','hm5'];
+const sbColors = ['rgba(60,80,58,0.35)','rgba(60,90,58,0.55)','rgba(65,105,62,0.70)','rgba(72,120,68,0.80)','rgba(80,135,75,0.90)','#5A7D5C'];
+
+function buildHeatmap(id, small) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  moodData.forEach((v, i) => {
+    const c = document.createElement('div');
+    if (small) {
+      c.className = 'sb-hm';
+      c.style.background = sbColors[v];
+    } else {
+      c.className = 'hm-cell ' + hmClasses[v];
+    }
+    c.title = '6月' + (i + 1) + '日';
+    el.appendChild(c);
+  });
+}
+buildHeatmap('heatmap', false);
+buildHeatmap('sbHmap', true);
+
+// ── LAYOUT TOGGLE ──
+function setLayout(mode) {
+  const grid = document.getElementById('gridLayout');
+  const side = document.getElementById('sideLayout');
+  const btnG = document.getElementById('btnGrid');
+  const btnS = document.getElementById('btnSide');
+  if (mode === 'grid') {
+    grid.classList.add('active');
+    side.classList.remove('active');
+    btnG.classList.add('on');
+    btnS.classList.remove('on');
+  } else {
+    side.classList.add('active');
+    grid.classList.remove('active');
+    btnS.classList.add('on');
+    btnG.classList.remove('on');
+  }
+}
+
+// ── SIDEBAR WIDTH ──
+const sbSlider = document.getElementById('sbWidthSlider');
+const sbPanel  = document.getElementById('sidePanel');
+const sbVal    = document.getElementById('sbWidthVal');
+if (sbSlider) {
+  sbSlider.addEventListener('input', () => {
+    const w = Math.round(parseInt(sbSlider.value));
+    sbPanel.style.width = w + 'px';
+    sbVal.textContent = w + 'px';
+  });
+}
+
+// ── MOOD PICK ──
+function pickMood(btn) {
+  document.querySelectorAll('.mood-chip').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+document.querySelectorAll('.sb-mood-chip').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.sb-mood-chip').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+  });
+});
+
+// ── FLASH THOUGHTS ──
+const flashQuotes = [
+  '"如果我的记忆可以被打包成一个气味，那会是什么气味？"',
+  '"为什么有些歌，一听就回到了很久以前的那个下午？"',
+  '"我在想象自己五年后回望今天——会是什么感觉？"',
+  '"如果今天是最后一天，我最想做什么？我为什么现在不做？"',
+  '"人类为什么明明很爱一个人，却偶尔希望自己从来没遇见过他？"',
+  '"有一种孤独，是在很多人中间才最强烈地感受到的。"',
+  '"我最害怕的不是被遗忘，而是有一天自己也忘了。"',
+  '"有多少次我以为的\'最后一次\'，其实真的是最后一次？"',
+];
+let flashIdx = 0;
+function nextFlash() {
+  flashIdx = (flashIdx + 1) % flashQuotes.length;
+  const el = document.getElementById('flashQ');
+  if (el) el.textContent = flashQuotes[flashIdx];
+}
+function saveFlash() {
+  showToast('闪念已存入今日记录');
+}
+
+// ── SAVE NOTE ──
+function saveNote() {
+  const ta = document.getElementById('writeArea');
+  const text = ta ? ta.value.trim() : '';
+  if (!text) { showToast('还没有写任何内容……'); return; }
+  showToast('今天的记录已存下');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── NAV LINKS ──
+document.querySelectorAll('.nav-link').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+document.querySelectorAll('.sb-nav-item').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.sb-nav-item').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>
