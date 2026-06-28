@@ -3,51 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>苦雨之地 - 清新版</title>
+<title>苦雨之地</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet">
 <style>
 /* ─────────────────────────────────────────
-   TOKENS - 雨后晨雾低饱和度色盘 (Eye-friendly)
+   TOKENS — 已优化为清新、明亮温暖的绿色磨砂模糊
 ───────────────────────────────────────── */
 :root {
   --font-serif: 'Noto Serif SC', 'STSong', 'SimSun', serif;
   --font-sans:  'Noto Sans SC', 'PingFang SC', sans-serif;
 
-  /* 清冷的灰绿色调，降低对比度和饱和度 */
-  --bg-deep:    #2A312C;   /* 黎明时的冷杉林 */
-  --bg-mid:     #343C37;   /* 雨后的雾气灰 */
-  --ink:        #121814;   
-  --ink-soft:   #232A25;
+  /* Fresh, bright and warm green palette */
+  --bg-deep:    #2A4430;   /* 清新温暖的林间底色 */
+  --bg-mid:     #34543C;   
+  --ink:        #15261A;   
+  --ink-soft:   #233C29;
 
-  /* 主题绿 - 低饱和、高明度 */
-  --g-dark:     #44534A;
-  --g-mid:      #5E7366;
-  --g-sage:     #829A8A;   /* 核心高亮色：鼠尾草绿 */
-  --g-light:    #A8C0B1;
-  --g-pale:     #C9DDD1;
-  --g-mist:     #E6F0EA;
-  --g-ghost:    #F2F7F4;
+  /* Greens with vibrant variation */
+  --g-dark:     #3B6344;
+  --g-mid:      #4E8259;
+  --g-sage:     #6E9E74;
+  --g-light:    #97C49D;
+  --g-pale:     #BFE3C4;
+  --g-mist:     #DBF2DF;
+  --g-ghost:    #EDF7EE;
 
-  /* Frosted card surfaces - 调整为更通透的冷色玻璃 */
-  --glass-bg:       rgba(42, 53, 46, 0.35);
-  --glass-bg-warm:  rgba(45, 52, 47, 0.45);
-  --glass-bg-light: rgba(94, 115, 102, 0.15);
-  --glass-border:   rgba(168, 192, 177, 0.15);
-  --glass-border-h: rgba(168, 192, 177, 0.35);
-  --glass-shine:    rgba(230, 240, 234, 0.05);
+  /* Frosted card surfaces (Bright, warm & blurry) */
+  --glass-bg:       rgba(240, 250, 242, 0.16); /* 通透的磨砂白绿 */
+  --glass-bg-warm:  rgba(245, 250, 238, 0.22); /* 温暖的微黄绿磨砂 */
+  --glass-bg-light: rgba(255, 255, 255, 0.28); 
+  --glass-border:   rgba(255, 255, 255, 0.35); /* 明亮的玻璃边缘 */
+  --glass-border-h: rgba(255, 255, 255, 0.60); 
+  --glass-shine:    rgba(255, 255, 255, 0.20); 
 
-  /* Text on glass - 柔和护眼 */
-  --t-primary:  rgba(235, 242, 238, 0.95);
-  --t-second:   rgba(195, 212, 202, 0.80);
-  --t-muted:    rgba(150, 170, 158, 0.60);
-  --t-ghost:    rgba(125, 145, 133, 0.40);
+  /* Text on bright glass */
+  --t-primary:  #FFFFFF;
+  --t-second:   #E2F3E5;
+  --t-muted:    #B6D8BD;
+  --t-ghost:    #9BC5A3;
 
-  /* Accents */
-  --acc-gold:   #B8A78A;
-  
-  --r-card: 16px;
+  /* Warm Accents */
+  --acc-gold:   #F3D598;   /* 温暖的阳光金 */
+  --acc-gold-l: rgba(243, 213, 152, 0.3);
+  --acc-rust:   rgba(214, 140, 116, 0.6);
+  --acc-water:  rgba(132, 201, 190, 0.6);
+
+  --r-card: 14px;
   --r-sm:   8px;
 }
 
@@ -66,334 +69,235 @@ body {
   letter-spacing: 0.03em;
   line-height: 1.7;
 }
-button, input, textarea { cursor: pointer; font-family: inherit; outline: none; }
-textarea { cursor: text; }
-::selection { background: rgba(130, 154, 138, 0.3); color: var(--t-primary); }
+button { cursor: pointer; font-family: inherit; }
+textarea, input { font-family: inherit; }
+::selection { background: rgba(255, 255, 255, 0.3); color: var(--t-primary); }
 
 /* ─────────────────────────────────────────
-   BACKGROUND — 优化后的 SVG 迷雾森林
+   BACKGROUND — Bright forest canvas
 ───────────────────────────────────────── */
-.bg-canvas { position: fixed; inset: 0; z-index: 0; background: var(--bg-deep); overflow: hidden; }
-.bg-canvas svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+.bg-canvas svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
 
 /* ─────────────────────────────────────────
-   LAYOUT & NAV
+   LAYOUT WRAPPER
 ───────────────────────────────────────── */
-.app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
 .nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 36px; border-bottom: 0.5px solid var(--glass-border);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  background: rgba(42, 49, 44, 0.65); position: sticky; top: 0; z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 36px;
+  border-bottom: 0.5px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(42, 68, 48, 0.45);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-.nav-brand-name { font-size: 15px; font-weight: 400; letter-spacing: 0.12em; }
-.nav-brand-sub { font-size: 10px; color: var(--t-muted); letter-spacing: 0.14em; font-family: var(--font-sans); }
-.nav-links { display: flex; gap: 4px; }
+.nav-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.nav-brand-name {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--t-primary);
+  letter-spacing: 0.12em;
+}
+.nav-brand-sub {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.14em;
+  font-family: var(--font-sans);
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
 .nav-link {
-  background: none; border: none; color: var(--t-second); font-size: 12px;
-  padding: 5px 14px; border-radius: 20px; letter-spacing: 0.06em; transition: all 0.2s;
+  background: none;
+  border: none;
+  color: var(--t-second);
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.06em;
+  transition: background 0.2s, color 0.2s;
 }
-.nav-link:hover { background: var(--glass-bg-light); color: var(--t-primary); }
-.nav-link.active { background: rgba(130, 154, 138, 0.2); color: var(--g-mist); }
+.nav-link:hover { background: rgba(255, 255, 255, 0.15); color: var(--t-primary); }
+.nav-link.active { background: rgba(255, 255, 255, 0.25); color: var(--g-ghost); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.nav-date {
+  font-size: 11px;
+  color: var(--t-muted);
+  letter-spacing: 0.1em;
+  font-family: var(--font-sans);
+}
+.nav-add {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 0.5px solid var(--glass-border-h);
+  background: var(--glass-bg-light);
+  color: var(--t-primary);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.nav-add:hover { background: rgba(255, 255, 255, 0.4); }
 
 /* ─────────────────────────────────────────
    HERO
 ───────────────────────────────────────── */
-.hero { padding: 52px 36px 28px; display: flex; flex-direction: column; gap: 12px; }
-.hero-eyebrow { font-size: 10px; color: var(--t-muted); letter-spacing: 0.2em; font-family: var(--font-sans); text-transform: uppercase; }
-.hero-title { font-size: clamp(22px, 3vw, 32px); font-weight: 300; color: var(--t-primary); letter-spacing: 0.06em; line-height: 1.45; }
-.hero-title em { font-style: normal; color: var(--g-pale); }
-.hero-body { font-size: 12px; color: var(--t-muted); max-width: 480px; line-height: 1.9; letter-spacing: 0.05em; font-family: var(--font-sans); }
+.hero {
+  padding: 52px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hero-eyebrow {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.2em;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+}
+.hero-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 300;
+  color: var(--t-primary);
+  letter-spacing: 0.06em;
+  line-height: 1.45;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--acc-gold);
+}
+.hero-body {
+  font-size: 12px;
+  color: var(--t-second);
+  max-width: 480px;
+  line-height: 1.9;
+  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+
+/* MOOD PICKER */
+.mood-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.mood-label-text {
+  font-size: 10px;
+  color: var(--t-muted);
+  letter-spacing: 0.1em;
+  margin-right: 4px;
+}
+.mood-chip {
+  padding: 4px 13px;
+  border-radius: 20px;
+  border: 0.5px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--t-second);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition: all 0.18s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.mood-chip:hover { border-color: var(--glass-border-h); background: rgba(255,255,255,0.25); color: var(--t-primary); }
+.mood-chip.on {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: #FFFFFF;
+  color: var(--ink);
+  font-weight: 400;
+}
 
 /* ─────────────────────────────────────────
-   MAIN GRID & CARDS
+   MAIN GRID
 ───────────────────────────────────────── */
-.main-grid { padding: 0 36px 60px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
-.c4 { grid-column: span 4; } .c5 { grid-column: span 5; } .c6 { grid-column: span 6; } .c7 { grid-column: span 7; } .c12 { grid-column: span 12; } .r2 { grid-row: span 2; }
+.main-grid {
+  padding: 0 36px 60px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+.c4  { grid-column: span 4; }
+.c5  { grid-column: span 5; }
+.c6  { grid-column: span 6; }
+.c7  { grid-column: span 7; }
+.c8  { grid-column: span 8; }
+.c12 { grid-column: span 12; }
+.r2  { grid-row: span 2; }
 
+/* ─────────────────────────────────────────
+   GLASS CARD BASE
+───────────────────────────────────────── */
 .card {
-  background: var(--glass-bg); border: 0.5px solid var(--glass-border);
-  border-radius: var(--r-card); padding: 22px 24px;
-  backdrop-filter: blur(20px) saturate(1.1); -webkit-backdrop-filter: blur(20px) saturate(1.1);
-  position: relative; overflow: hidden; transition: border-color 0.3s;
+  background: var(--glass-bg);
+  border: 0.5px solid var(--glass-border);
+  border-radius: var(--r-card);
+  padding: 18px 20px;
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
 }
 .card::before {
-  content: ''; position: absolute; inset: 0; border-radius: var(--r-card);
-  background: linear-gradient(135deg, var(--glass-shine) 0%, transparent 40%); pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-card);
+  background: linear-gradient(135deg, var(--glass-shine) 0%, transparent 60%);
+  pointer-events: none;
 }
-.card:hover { border-color: var(--glass-border-h); }
-.card-label { font-size: 11px; color: var(--t-muted); letter-spacing: 0.12em; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; font-family: var(--font-sans); }
-.card-label-left { display: flex; align-items: center; gap: 8px; }
-.card-label svg { opacity: 0.7; }
+.card:hover { border-color: var(--glass-border-h); background: rgba(255,255,255,0.20); }
 
-/* ─────────────────────────────────────────
-   MODULE MARKET (可添加功能模块)
-───────────────────────────────────────── */
-.module-header {
-  grid-column: span 12; display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 0 8px; border-bottom: 0.5px solid rgba(130, 154, 138, 0.15); margin-top: 12px;
-}
-.module-title { font-size: 12px; color: var(--g-pale); letter-spacing: 0.1em; font-family: var(--font-sans); }
-.module-actions { display: flex; gap: 12px; }
-.module-btn {
-  font-size: 11px; color: var(--t-muted); background: none; border: 0.5px dashed var(--glass-border-h);
-  padding: 4px 12px; border-radius: 12px; transition: all 0.2s;
-}
-.module-btn:hover { border-style: solid; border-color: var(--g-sage); color: var(--g-mist); background: rgba(130, 154, 138, 0.1); }
+.card-light { background: rgba(255, 255, 255, 0.25); }
+.card-dark  { background: rgba(30, 50, 35, 0.35); }
+.card-warm  { background: var(--glass-bg-warm); }
 
-/* ─────────────────────────────────────────
-   DYNAMIC CYCLE COMPONENT (身体周期)
-───────────────────────────────────────── */
-.cycle-settings { display: none; margin-top: 12px; padding-top: 12px; border-top: 0.5px dashed var(--glass-border); flex-direction: column; gap: 10px; }
-.cycle-settings.active { display: flex; }
-.setting-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-family: var(--font-sans); color: var(--t-second); }
-.setting-input { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--g-mist); padding: 4px 8px; border-radius: 4px; width: 100px; font-size: 11px; }
-.setting-save { background: var(--g-sage); color: var(--bg-deep); border: none; padding: 4px 12px; border-radius: 4px; font-weight: 500; }
-
-.cycle-wrap { display: flex; align-items: center; gap: 18px; margin-top: 10px; }
-.cycle-ring {
-  width: 64px; height: 64px; border-radius: 50%;
-  border: 4px solid rgba(130, 154, 138, 0.15);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  position: relative; flex-shrink: 0;
-}
-/* 通过 conic-gradient 实现动态进度环 */
-.cycle-ring::before {
-  content: ''; position: absolute; inset: -4px; border-radius: 50%;
-  background: conic-gradient(var(--g-sage) var(--progress, 0%), transparent 0);
-  -webkit-mask: radial-gradient(closest-side, transparent 85%, black 86%);
-  mask: radial-gradient(closest-side, transparent 85%, black 86%);
-}
-.cycle-num { font-size: 18px; font-weight: 400; color: var(--g-ghost); line-height: 1; }
-.cycle-sub { font-size: 9px; color: var(--t-muted); font-family: var(--font-sans); margin-top: 2px; }
-.cycle-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-.cycle-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--t-muted); font-family: var(--font-sans); }
-.cycle-val { color: var(--t-primary); font-weight: 400; }
-.phase-tag { 
-  display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 9px; 
-  background: rgba(130, 154, 138, 0.15); color: var(--g-pale); border: 0.5px solid rgba(130, 154, 138, 0.3);
-}
-
-/* ─────────────────────────────────────────
-   WRITE AREA & OTHER CARDS
-───────────────────────────────────────── */
-.write-area {
-  width: 100%; background: transparent; border: none; color: var(--t-primary);
-  font-size: 13px; line-height: 2; resize: none; min-height: 90px;
-  caret-color: var(--g-sage); letter-spacing: 0.04em; font-family: var(--font-serif);
-}
-.write-area::placeholder { color: var(--t-ghost); }
-.btn-primary {
-  font-size: 11px; padding: 6px 16px; border-radius: var(--r-sm);
-  background: rgba(130, 154, 138, 0.25); border: 0.5px solid var(--g-sage);
-  color: var(--g-mist); letter-spacing: 0.08em; transition: all 0.2s; font-family: var(--font-sans);
-}
-.btn-primary:hover { background: rgba(130, 154, 138, 0.45); }
-.icon-btn { background: none; border: none; color: var(--t-muted); transition: color 0.2s; display: flex; align-items: center; }
-.icon-btn:hover { color: var(--g-sage); }
-</style>
-</head>
-<body>
-
-<div class="bg-canvas" aria-hidden="true">
-  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <filter id="softBlur"><feGaussianBlur stdDeviation="3"/></filter>
-      <radialGradient id="fogCenter" cx="50%" cy="40%" r="60%">
-        <stop offset="0%" stop-color="#44534A" stop-opacity="0.25"/>
-        <stop offset="100%" stop-color="#2A312C" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-    <rect width="1440" height="900" fill="#2A312C"/>
-    <ellipse cx="720" cy="300" rx="800" ry="400" fill="url(#fogCenter)"/>
-    
-    <g filter="url(#softBlur)" opacity="0.4">
-      <rect x="100" y="200" width="12" height="700" fill="#232A25"/>
-      <ellipse cx="106" cy="220" rx="60" ry="90" fill="#232A25"/>
-      <rect x="1300" y="150" width="16" height="750" fill="#232A25"/>
-      <ellipse cx="1308" cy="180" rx="80" ry="120" fill="#232A25"/>
-      <rect x="300" y="300" width="8" height="600" fill="#252E28"/>
-      <ellipse cx="304" cy="320" rx="40" ry="70" fill="#252E28"/>
-    </g>
-    <g opacity="0.05" stroke="#A8C0B1" stroke-width="0.5">
-      <line x1="200" y1="0" x2="190" y2="900"/>
-      <line x1="600" y1="0" x2="590" y2="900"/>
-      <line x1="1100" y1="0" x2="1090" y2="900"/>
-    </g>
-  </svg>
-</div>
-
-<div class="app">
-  <nav class="nav">
-    <div class="nav-brand">
-      <div class="nav-brand-name">苦雨之地</div>
-      <div class="nav-brand-sub">a place for rain &amp; thought</div>
-    </div>
-    <div class="nav-links">
-      <button class="nav-link active">今日</button>
-      <button class="nav-link">我的模块</button>
-    </div>
-  </nav>
-
-  <div class="hero">
-    <div class="hero-eyebrow">2026 · 6 · 28 · 今天有阵雨</div>
-    <div class="hero-title">
-      雨声褪去了城市的杂音，<br><em>万物归于平静。</em>
-    </div>
-    <div class="hero-body">
-      模块化你的生活记录。保留此刻最需要的关注点，隐去冗余的信息。
-    </div>
-  </div>
-
-  <div class="main-grid">
-    <div class="card c7 r2">
-      <div class="card-label">
-        <div class="card-label-left">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          此刻想说
-        </div>
-      </div>
-      <textarea class="write-area" placeholder="雨后的空气里有一种泥土和桉树的冷香..."></textarea>
-      <div style="display:flex; justify-content:flex-end; margin-top:12px;">
-        <button class="btn-primary">存下来</button>
-      </div>
-    </div>
-
-    <div class="module-header">
-      <div class="module-title">我的自选模块 (Add-ons)</div>
-      <div class="module-actions">
-        <button class="module-btn">+ 节气与体质</button>
-        <button class="module-btn">+ 睡眠节律</button>
-        <button class="module-btn">+ 饮水与情绪</button>
-      </div>
-    </div>
-
-    <div class="card c5" id="module-cycle">
-      <div class="card-label">
-        <div class="card-label-left">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21a9 9 0 1 1 0-18 c3.866 0 7 3.134 7 7"/></svg>
-          身体周期追踪
-        </div>
-        <button class="icon-btn" onclick="toggleCycleSettings()" title="设置周期">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        </button>
-      </div>
-      
-      <div class="cycle-wrap">
-        <div class="cycle-ring" id="cycleRing" style="--progress: 0%;">
-          <span class="cycle-num" id="cycleDayDisplay">--</span>
-          <span class="cycle-sub">Day</span>
-        </div>
-        <div class="cycle-info">
-          <div class="cycle-row">
-            <span>当前阶段</span>
-            <span class="phase-tag" id="cyclePhase">计算中...</span>
-          </div>
-          <div class="cycle-row">
-            <span>预测排卵日</span>
-            <span class="cycle-val" id="ovulationDate">--/--</span>
-          </div>
-          <div class="cycle-row">
-            <span>预测下次日期</span>
-            <span class="cycle-val" id="nextPeriodDate">--/--</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="cycle-settings" id="cycleSettingsPanel">
-        <div class="setting-row">
-          <label>上次开始日期</label>
-          <input type="date" id="inputLastPeriod" class="setting-input">
-        </div>
-        <div class="setting-row">
-          <label>平均周期长度 (天)</label>
-          <input type="number" id="inputCycleLength" class="setting-input" value="28" min="20" max="45">
-        </div>
-        <div style="text-align: right; margin-top: 4px;">
-          <button class="setting-save" onclick="saveAndCalculateCycle()">保存并计算</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// ==========================================
-// 核心逻辑：身体周期的科学计算
-// 基于黄体期相对固定的医学规律（约14天）
-// 预测排卵日 = 预测下次月经日 - 14天
-// ==========================================
-
-function toggleCycleSettings() {
-  const panel = document.getElementById('cycleSettingsPanel');
-  panel.classList.toggle('active');
-}
-
-function formatDate(date) {
-  return `${date.getMonth() + 1}月${date.getDate()}日`;
-}
-
-function saveAndCalculateCycle() {
-  const lastPeriodInput = document.getElementById('inputLastPeriod').value;
-  const cycleLength = parseInt(document.getElementById('inputCycleLength').value, 10);
-  
-  if (!lastPeriodInput || isNaN(cycleLength)) {
-    alert("请正确填写日期和周期长度");
-    return;
-  }
-
-  const lastPeriodDate = new Date(lastPeriodInput);
-  const today = new Date();
-  
-  // 1. 计算当前是第几天
-  const diffTime = today.getTime() - lastPeriodDate.getTime();
-  const currentDay = Math.floor(diffTime / (1000 * 3600 * 24)) + 1;
-  
-  // 处理异常值（未来日期或超出周期太多）
-  if (currentDay < 1) {
-    alert("上次日期不能在未来");
-    return;
-  }
-  
-  // 2. 计算下一次日期
-  const nextPeriodDate = new Date(lastPeriodDate.getTime() + (cycleLength * 24 * 60 * 60 * 1000));
-  
-  // 3. 计算排卵日 (下次日期前14天)
-  const ovulationDate = new Date(nextPeriodDate.getTime() - (14 * 24 * 60 * 60 * 1000));
-  
-  // 4. 判断当前阶段 (卵泡期 / 排卵期 / 黄体期 / 经期)
-  let phaseText = "黄体期"; // 默认
-  if (currentDay <= 5) {
-    phaseText = "月经期 (静养)";
-  } else if (currentDay >= cycleLength - 14 - 3 && currentDay <= cycleLength - 14 + 3) {
-    phaseText = "排卵易孕期";
-  } else if (currentDay < cycleLength - 14) {
-    phaseText = "卵泡期 (能量回升)";
-  } else if (currentDay > cycleLength) {
-    phaseText = "周期延迟中";
-  }
-
-  // 5. 更新 UI
-  document.getElementById('cycleDayDisplay').innerText = currentDay;
-  document.getElementById('cyclePhase').innerText = phaseText;
-  document.getElementById('nextPeriodDate').innerText = formatDate(nextPeriodDate);
-  document.getElementById('ovulationDate').innerText = formatDate(ovulationDate);
-  
-  // 6. 更新环形进度条 (CSS 变量)
-  let progress = Math.min((currentDay / cycleLength) * 100, 100);
-  document.getElementById('cycleRing').style.setProperty('--progress', `${progress}%`);
-  
-  // 关闭面板
-  toggleCycleSettings();
-}
-
-// 初始化默认值（模拟用户已保存的数据：15天前）
-window.onload = function() {
-  const d = new Date();
-  d.setDate(d.getDate() - 14); // 模拟昨天刚好是第15天
-  document.getElementById('inputLastPeriod').valueAsDate = d;
-  saveAndCalculateCycle();
-};
-</script>
-</body>
-</html>
+/* CARD LABELS & TITLES */
+.card-label {
+  font-size: 10px;
+  color: var(--g-mist);
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+  display: flex;
+  align
